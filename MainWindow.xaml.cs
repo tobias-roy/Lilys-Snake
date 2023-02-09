@@ -20,7 +20,11 @@ namespace Snaek
     /// </summary>
     public partial class MainWindow : Window
     {
+        private System.Windows.Threading.DispatcherTimer gameTickTimer = new System.Windows.Threading.DispatcherTimer();
         const int SnakeSquareSize = 20;
+        const int SnakeStartLength = 3;
+        const int SnakeStartSpeed = 400;
+        const int SnakeSpeedThreshold = 100;
 
         private SolidColorBrush snakeBodyBrush = Brushes.Green;
         private SolidColorBrush snakeHeadBrush = Brushes.YellowGreen;
@@ -30,9 +34,21 @@ namespace Snaek
         private SnakeDirection snakeDirection = SnakeDirection.Up;
         private int snakeLength;
 
+        public MainWindow()
+        {
+            InitializeComponent();
+            gameTickTimer.Tick += GameTickTimer_Tick;
+        }
+
+        private void GameTickTimer_Tick(object sender, EventArgs e)
+        {
+            MoveSnake();
+        }
+
         private void Window_ContentRendered(object sender, EventArgs e)
         {
             DrawGameArea();
+            StartNewGame();
         }
 
         private void DrawGameArea()
@@ -68,6 +84,20 @@ namespace Snaek
                 if(nextY >= GameArea.ActualHeight)
                     doneDrawingBackground = true;
             }
+        }
+
+        private void StartNewGame()
+        {
+            snakeLength = SnakeStartLength;
+            snakeDirection = SnakeDirection.Up;
+            snakeParts.Add(new SnakePart() { Position = new Point(SnakeSquareSize * 5, SnakeSquareSize * 5) });
+            gameTickTimer.Interval = TimeSpan.FromMilliseconds(SnakeStartSpeed);
+
+            //Draw the snake
+            DrawSnake();
+
+            //Go!
+            gameTickTimer.IsEnabled = true;
         }
 
         private void DrawSnake()
@@ -131,5 +161,7 @@ namespace Snaek
             //This will run later
             //DoCollisionCheck();
         }
+
+
     }
 }
