@@ -6,10 +6,43 @@
         xmlns:local="clr-namespace:Snaek"
         mc:Ignorable="d"
         Title="Snaek - Score: 0" SizeToContent="WidthAndHeight" 
-        ContentRendered="Window_ContentRendered" KeyDown="Window_KeyDown">
-        <Border BorderBrush="Black" BorderThickness="5">
-            <Canvas Name="GameArea" ClipToBounds="True" Width="400" Height="400">
+        ContentRendered="Window_ContentRendered" KeyDown="Window_KeyDown"
+        ResizeMode="NoResize" WindowStyle="None" Background="Black" MouseDown="Window_MouseDown">
+        <DockPanel Background="Black">
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontFamily" Value="Consolas"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontSize" Value="24"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+            </Grid.Resources>
 
-            </Canvas>
-        </Border>
+            <WrapPanel Margin="10,0,0,0">
+                <TextBlock>Score:</TextBlock>
+                <TextBlock Name="tbStatusScore">0</TextBlock>
+            </WrapPanel>
+            <Button Grid.Column="1" 
+                    DockPanel.Dock="Right" 
+                    Background="Transparent" 
+                    Foreground="White" 
+                    FontWeight="Bold" 
+                    FontSize="20" 
+                    BorderThickness="0" 
+                    Name="btnClose" 
+                    Click="BtnClose_Click" 
+                    Padding="10,0"
+                    >X</Button>
+            </Grid>
+            <Border BorderBrush="Black" BorderThickness="5">
+                <Canvas Name="GameArea" ClipToBounds="True" Width="400" Height="400">
+
+                </Canvas>
+            </Border>
+        </DockPanel>
 </Window>

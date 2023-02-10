@@ -280,13 +280,23 @@ namespace Snaek
 
         private void UpdateGameStatus()
         {
-            this.Title = $"Snaek - Score: {currentScore}";
+            this.tbStatusScore.Text = currentScore.ToString();
         }
 
         private void EndGame()
         {
             gameTickTimer.IsEnabled = false;
             MessageBox.Show("Auch, looks like your teeth broke! \n Press spacebar for a new game!", "Snaek");
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }
