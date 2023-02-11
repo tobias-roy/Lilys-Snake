@@ -298,5 +298,23 @@ namespace Snaek
         {
             this.Close();
         }
+
+        private void BtnShowHighscoreList_Click(object sender, RoutedEventArgs e)
+        {
+            //Show some awesome list of players that are good at this game!
+            bdrWelcomeMessage.Visibility = Visibility.Collapsed;
+            bdrHighscoreList.Visibility = Visibility.Visible;
+        }
+
+        private void BtnHideHighscoreList_Click(object sender, RoutedEventArgs e)
+        {
+            bdrWelcomeMessage.Visibility = Visibility.Visible;
+            bdrHighscoreList.Visibility = Visibility.Collapsed;
+        }
+
+        private void BtnAddToHighscoreList_Click(object sender, RoutedEventArgs e)
+        {
+            //Nothingyet
+        }
     }
 }
