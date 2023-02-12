@@ -50,6 +50,8 @@
         </Grid>
         <Border BorderBrush="Black" BorderThickness="5">
             <Canvas Name="GameArea" ClipToBounds="True" Width="400" Height="400">
+
+                <!--Main window-->
                 <Border BorderBrush="AliceBlue" 
                                 BorderThickness="2" 
                                 Width="300" 
@@ -59,14 +61,14 @@
                                 Name="bdrWelcomeMessage"
                                 Panel.ZIndex="1">
                     <StackPanel Orientation="Vertical" Background="LightGray">
-                        <Image Source="./icons/snake_icon48.png" Width="48" Margin="0,30,0,0"></Image>
+                        <Image Source="./resources/icons/snake_icon48.png" Width="48" Margin="0,30,0,0"></Image>
                         <TextBlock FontWeight="Bold" FontSize="50" HorizontalAlignment="Center" Margin="0,-20,0,0">Snaek</TextBlock>
                         <StackPanel Orientation="Horizontal" Margin="0,20,0,0" HorizontalAlignment="Center">
                             <TextBlock FontWeight="Bold" FontSize="20" Margin="5,0,0,0">Controls:</TextBlock>
-                            <Image Source="./icons/arrow_left.png" Width="25" Margin="10,0,0,0"/>
-                            <Image Source="./icons/arrow_up.png" Width="25" Margin="10,0,0,0"></Image>
-                            <Image Source="./icons/arrow_down.png" Width="25" Margin="10,0,0,0"></Image>
-                            <Image Source="./icons/arrow_right.png" Width="25" Margin="10,0,0,0"></Image>
+                            <Image Source="./resources/icons/arrow_left.png" Width="25" Margin="10,0,0,0"/>
+                            <Image Source="./resources/icons/arrow_up.png" Width="25" Margin="10,0,0,0"></Image>
+                            <Image Source="./resources/icons/arrow_down.png" Width="25" Margin="10,0,0,0"></Image>
+                            <Image Source="./resources/icons/arrow_right.png" Width="25" Margin="10,0,0,0"></Image>
                         </StackPanel>
                         <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,25,0,0" Foreground="Coral">Press SPACE to start!</TextBlock>
                         <Grid Margin="0,15,0,0">
@@ -110,9 +112,9 @@
                         Canvas.Top="50"
                         Name="bdrHighscoreList"
                         Panel.ZIndex="1"
-                        Visibility="Collapsed">
+                    Visibility="Collapsed">
                     <StackPanel Orientation="Vertical" Background="#FFDEB5B5">
-                        <Image Source="./icons/snake_icon48.png" Width="48" Margin="0,10,0,0"></Image>
+                        <Image Source="./resources/icons/snake_icon48.png" Width="48" Margin="0,10,0,0"></Image>
                         <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,-12,0,0">Awesome players:</TextBlock>
                         <Grid Margin="0,15,0,0" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5">
                             <Grid.RowDefinitions>
@@ -164,50 +166,44 @@
                         Canvas.Top="50"
                         Name="bdrInsertPlayerName"
                         Panel.ZIndex="1"
-                        Visibility="Collapsed">
+                    Visibility="Collapsed">
                     <StackPanel Orientation="Vertical" Background="#FFDEB5B5">
-                        <Image Source="./icons/snake_icon48.png" Width="48" Margin="0,10,0,0"></Image>
-                        <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,-12,0,0">Awesome Player!</TextBlock>
-                        <TextBlock FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" Margin="0,10,0,0">Write your name!</TextBlock>
-                        <Grid Margin="0,15,0,0" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Background="#FFA492A4" Width="280" Margin="0,0,0,8">
-                                <TextBox 
-                                    Name="txtPlayerName" 
-                                    FontSize="12" 
-                                    FontWeight="Bold" 
-                                    MaxLength="10"
-                                    Margin="20"
-                                    HorizontalAlignment="Center">
-                                </TextBox>
-                            </Grid>
-                            <Grid Grid.Row="1">
-                                <Button HorizontalAlignment="center" 
-                                        BorderThickness="0" 
-                                        Name="btnInsertPlayerNameButton" 
-                                        Click="BtnAddToHighscoreList_Click" 
-                                        Background="#FFC18AEA">
-                                    <Border 
-                                    BorderThickness="2" 
-                                    Width="Auto" 
-                                    Height="30"
-                                    Name="bdrInsertPlayerNameButton"
-                                    Panel.ZIndex="1"
-                                    Padding="3,0">
-                                        <Border.BorderBrush>
-                                            <LinearGradientBrush EndPoint="0.2,1" StartPoint="0.2,0">
-                                                <GradientStop Color="White" Offset="0"/>
-                                                <GradientStop Color="#FF19F1CE" Offset="1"/>
-                                            </LinearGradientBrush>
-                                        </Border.BorderBrush>
-                                        <TextBlock FontWeight="Bold" FontSize="15" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center">Start!</TextBlock>
-                                    </Border>
-                                </Button>
-                            </Grid>
-                        </Grid>
+                        <Image Source="./resources/icons/snake_icon48.png" Width="48" Margin="0,10,0,0"></Image>
+                        <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,-12,0,0">A new Awesome Player!</TextBlock>
+                        <TextBlock FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" Margin="0,10,0,0">Write your name</TextBlock>
+                        <TextBlock FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" Margin="0,10,0,0">and add it to the hall of fame!</TextBlock>
+                        <TextBox 
+                            Name="txtPlayerName" 
+                            FontWeight="Bold" 
+                            MaxLength="10"
+                            Margin="20"
+                            HorizontalAlignment="Center"
+                            Foreground="Black"
+                            Width="120"
+                            Height="30"
+                            FontSize="20">
+                        </TextBox>
+                        <Button HorizontalAlignment="center" 
+                            BorderThickness="0" 
+                            Name="btnInsertPlayerNameButton" 
+                            Click="BtnAddToHighscoreList_Click" 
+                            Background="#FFC18AEA">
+                            <Border 
+                                BorderThickness="2" 
+                                Width="Auto" 
+                                Height="30"
+                                Name="bdrInsertPlayerNameButton"
+                                Panel.ZIndex="1"
+                                Padding="3,0">
+                                <Border.BorderBrush>
+                                    <LinearGradientBrush EndPoint="0.2,1" StartPoint="0.2,0">
+                                        <GradientStop Color="White" Offset="0"/>
+                                        <GradientStop Color="#FF19F1CE" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.BorderBrush>
+                                <TextBlock FontWeight="Bold" FontSize="15" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center">Hall of fame!</TextBlock>
+                            </Border>
+                        </Button>
                     </StackPanel>
                 </Border>
 
@@ -237,7 +233,7 @@
                                 <GradientStop Color="White" Offset="1"/>
                             </LinearGradientBrush>
                         </StackPanel.Background>
-                        <Image Source="./icons/snake_icon256.png" Width="120" Margin="0,10,0,0"></Image>
+                        <Image Source="./resources/icons/snake_icon256.png" Width="120" Margin="0,10,0,0"></Image>
                         <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,-8,0,0">Awesome job!</TextBlock>
                         <TextBlock FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" Margin="0,10,0,0">Your score:</TextBlock>
                         <TextBlock Name="tbFinalScore" FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" Foreground="Maroon" Margin="0,30,0,0">0</TextBlock>
