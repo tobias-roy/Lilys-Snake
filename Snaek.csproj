@@ -8,16 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="resources\audio\snake\eating\Laekkert.m4a" />
-    <None Remove="resources\audio\snake\eating\Mmh.m4a" />
-    <None Remove="resources\audio\snake\eating\rawp.m4a" />
-    <None Remove="resources\audio\snake\eating\SaftigtAeble.m4a" />
-    <None Remove="resources\audio\snake\highscore\FlotKlaret.m4a" />
-    <None Remove="resources\audio\snake\highscore\Tillykke.m4a" />
-    <None Remove="resources\audio\snake\loosing\Av.m4a" />
-    <None Remove="resources\audio\snake\loosing\AvForSoeren.m4a" />
-    <None Remove="resources\audio\snake\loosing\DinKlovn.m4a" />
-    <None Remove="resources\audio\snake\loosing\Hovsa.m4a" />
     <None Remove="resources\icons\arrow_down.png" />
     <None Remove="resources\icons\arrow_left.png" />
     <None Remove="resources\icons\arrow_right.png" />
@@ -25,21 +15,11 @@
     <None Remove="resources\icons\snake_icon.png" />
     <None Remove="resources\icons\snake_icon256.png" />
     <None Remove="resources\icons\snake_icon48.png" />
+    <None Remove="resources\images\backgroundCuteSnake.png" />
+    <None Remove="resources\images\snakeface.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="resources\audio\snake\eating\Laekkert.m4a" />
-    <Resource Include="resources\audio\snake\eating\Mmh.m4a">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="resources\audio\snake\eating\rawp.m4a" />
-    <Resource Include="resources\audio\snake\eating\SaftigtAeble.m4a" />
-    <Resource Include="resources\audio\snake\highscore\FlotKlaret.m4a" />
-    <Resource Include="resources\audio\snake\highscore\Tillykke.m4a" />
-    <Resource Include="resources\audio\snake\loosing\Av.m4a" />
-    <Resource Include="resources\audio\snake\loosing\AvForSoeren.m4a" />
-    <Resource Include="resources\audio\snake\loosing\DinKlovn.m4a" />
-    <Resource Include="resources\audio\snake\loosing\Hovsa.m4a" />
     <Resource Include="resources\icons\arrow_down.png" />
     <Resource Include="resources\icons\arrow_left.png" />
     <Resource Include="resources\icons\arrow_right.png" />
@@ -47,6 +27,8 @@
     <Resource Include="resources\icons\snake_icon.png" />
     <Resource Include="resources\icons\snake_icon256.png" />
     <Resource Include="resources\icons\snake_icon48.png" />
+    <Resource Include="resources\images\backgroundCuteSnake.png" />
+    <Resource Include="resources\images\snakeface.png" />
   </ItemGroup>
 
 </Project>

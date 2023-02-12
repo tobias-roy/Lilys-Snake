@@ -17,7 +17,7 @@
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
     </Window.Resources>
-    <DockPanel Background="White">
+    <DockPanel Background="#FF352E50">
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -27,56 +27,115 @@
                 <Style TargetType="TextBlock">
                     <Setter Property="FontFamily" Value="Consolas"/>
                     <Setter Property="Foreground" Value="Black"/>
-                    <Setter Property="FontSize" Value="24"/>
+                    <Setter Property="FontSize" Value="48"/>
                     <Setter Property="FontWeight" Value="Bold"/>
                 </Style>
             </Grid.Resources>
-
             <WrapPanel Margin="10,0,0,0">
-                <TextBlock>Score:</TextBlock>
-                <TextBlock Name="tbStatusScore">0</TextBlock>
+                <TextBlock Foreground="#FF8595D0">Score:</TextBlock>
+                <TextBlock Name="tbStatusScore" Foreground="#FF8595D0">0</TextBlock>
             </WrapPanel>
             <Button Grid.Column="1" 
                     DockPanel.Dock="Right" 
                     Background="Transparent" 
-                    Foreground="DarkTurquoise" 
+                    Foreground="#FF754057" 
                     FontWeight="Bold" 
-                    FontSize="20" 
+                    FontSize="40" 
                     BorderThickness="0" 
                     Name="btnClose" 
                     Click="BtnClose_Click" 
                     Padding="10,0"
                     >X</Button>
         </Grid>
-        <Border BorderBrush="Black" BorderThickness="5">
-            <Canvas Name="GameArea" ClipToBounds="True" Width="400" Height="400">
+        <Border BorderThickness="5">
+            <Border.BorderBrush>
+                <SolidColorBrush Color="#FF6F6C51" Opacity="0.3"/>
+            </Border.BorderBrush>
+            <Canvas Name="GameArea" ClipToBounds="True" Width="800" Height="800">
 
                 <!--Main window-->
-                <Border BorderBrush="AliceBlue" 
-                                BorderThickness="2" 
-                                Width="300" 
-                                Height="300"
-                                Canvas.Left="50"
-                                Canvas.Top="50"
-                                Name="bdrWelcomeMessage"
-                                Panel.ZIndex="1">
-                    <StackPanel Orientation="Vertical" Background="LightGray">
-                        <Image Source="./resources/icons/snake_icon48.png" Width="48" Margin="0,30,0,0"></Image>
-                        <TextBlock FontWeight="Bold" FontSize="50" HorizontalAlignment="Center" Margin="0,-20,0,0">Snaek</TextBlock>
-                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0" HorizontalAlignment="Center">
-                            <TextBlock FontWeight="Bold" FontSize="20" Margin="5,0,0,0">Controls:</TextBlock>
-                            <Image Source="./resources/icons/arrow_left.png" Width="25" Margin="10,0,0,0"/>
-                            <Image Source="./resources/icons/arrow_up.png" Width="25" Margin="10,0,0,0"></Image>
-                            <Image Source="./resources/icons/arrow_down.png" Width="25" Margin="10,0,0,0"></Image>
-                            <Image Source="./resources/icons/arrow_right.png" Width="25" Margin="10,0,0,0"></Image>
+                <Border 
+                        BorderThickness="2" 
+                        Width="700" 
+                        Height="700"
+                        Canvas.Left="50"
+                        Canvas.Top="50"
+                        Name="bdrWelcomeMessage"
+                        Panel.ZIndex="1"
+                        Visibility="Visible">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel.Background>
+                            <ImageBrush ImageSource="./resources/images/backgroundCuteSnake.png"/>
+                        </StackPanel.Background>
+                        <TextBlock FontWeight="Bold" FontSize="100" Margin="0,20,0,0" HorizontalAlignment="Center">
+                            <TextBlock.Foreground>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <LinearGradientBrush.RelativeTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                            <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                            <RotateTransform Angle="-46.637" CenterX="0.5" CenterY="0.5"/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </LinearGradientBrush.RelativeTransform>
+                                    <GradientStop Color="#FF754057"/>
+                                    <GradientStop Color="#FF2462E6" Offset="1"/>
+                                </LinearGradientBrush>
+                            </TextBlock.Foreground>Lily's Snake</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,40,20,0" HorizontalAlignment="Right">
+                            <TextBlock FontWeight="Bold" FontSize="30" Margin="5,0,0,0" Foreground="#413667">Controls:</TextBlock>
+                            <Image Source="./resources/icons/arrow_left.png" Width="40" Margin="10,0,0,0"/>
+                            <Image Source="./resources/icons/arrow_up.png" Width="40" Margin="10,0,0,0"></Image>
+                            <Image Source="./resources/icons/arrow_down.png" Width="40" Margin="10,0,0,0"></Image>
+                            <Image Source="./resources/icons/arrow_right.png" Width="40" Margin="10,0,0,0"></Image>
                         </StackPanel>
-                        <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,25,0,0" Foreground="Coral">Press SPACE to start!</TextBlock>
-                        <Grid Margin="0,15,0,0">
+                        <TextBlock FontWeight="Bold" FontSize="40" HorizontalAlignment="Right" Margin="0,10,15,0">
+                            <TextBlock.Foreground>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <LinearGradientBrush.RelativeTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                            <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                            <RotateTransform Angle="142.125" CenterX="0.5" CenterY="0.5"/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </LinearGradientBrush.RelativeTransform>
+                                    <GradientStop Color="#FF754057"/>
+                                    <GradientStop Color="#FF2462E6" Offset="0.993"/>
+                                </LinearGradientBrush>
+                        </TextBlock.Foreground>Press SPACE to start!</TextBlock>
+                        <Image Source="./resources/images/snakeface.png" Width="250" Margin="-430,-120,0,0" RenderTransformOrigin="0.5,0.5">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="12" CenterY="12" />
+                            </Image.RenderTransform>
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsEnabled" Value="True">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation
+                                                            Storyboard.TargetProperty="RenderTransform.Angle"
+                                                            From="-5"
+                                                            To="5"
+                                                            Duration="0:0:5"
+                                                            AutoReverse="True"
+                                                            RepeatBehavior="Forever"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <Grid Margin="0,200,0,0" HorizontalAlignment="Center">
                             <Button HorizontalAlignment="center" VerticalAlignment="Center" BorderThickness="0" Name="btnShowHighscoreList" Click="BtnShowHighscoreList_Click" Background="{x:Null}">
-                                <Border BorderBrush="AliceBlue" 
+                                <Border 
                                 BorderThickness="2" 
                                 Width="Auto" 
-                                Height="30"
+                                Height="60"
                                 Canvas.Left="50"
                                 Canvas.Top="50"
                                 Name="bdrTopScoreButton"
@@ -92,11 +151,11 @@
                                                     <TranslateTransform/>
                                                 </TransformGroup>
                                             </LinearGradientBrush.RelativeTransform>
-                                            <GradientStop Color="#FFE165E2"/>
-                                            <GradientStop Color="#FF46FFC8" Offset="0.993"/>
+                                            <GradientStop Color="#FF8B65E2" Offset="0"/>
+                                            <GradientStop Color="#FF4F62A7" Offset="1"/>
                                         </LinearGradientBrush>
                                     </Border.Background>
-                                    <TextBlock FontWeight="Bold" FontSize="15" Foreground="#FFC7248C" HorizontalAlignment="Center" VerticalAlignment="Center">Check the awesome list!</TextBlock>
+                                    <TextBlock Padding="15,0" FontWeight="Bold" FontSize="24" Foreground="#FFF1F0F1" HorizontalAlignment="Center" VerticalAlignment="Center">Check the awesome list!</TextBlock>
                                 </Border>
                             </Button>
                         </Grid>
@@ -104,30 +163,78 @@
                 </Border>
 
                 <!--Highscore list-->
-                <Border BorderBrush="AliceBlue" 
+                <Border 
                         BorderThickness="2" 
-                        Width="300" 
-                        Height="300"
+                        Width="700" 
+                        Height="700"
                         Canvas.Left="50"
                         Canvas.Top="50"
                         Name="bdrHighscoreList"
                         Panel.ZIndex="1"
                     Visibility="Collapsed">
-                    <StackPanel Orientation="Vertical" Background="#FFDEB5B5">
-                        <Image Source="./resources/icons/snake_icon48.png" Width="48" Margin="0,10,0,0"></Image>
-                        <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,-12,0,0">Awesome players:</TextBlock>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel.Background>
+                            <ImageBrush ImageSource="./resources/images/backgroundCuteSnake.png"/>
+                        </StackPanel.Background>
+                        <TextBlock FontWeight="Bold" FontSize="60" HorizontalAlignment="Center" Margin="0,60,0,0">
+                            <TextBlock.Foreground>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <LinearGradientBrush.RelativeTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                            <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                            <RotateTransform Angle="-46.637" CenterX="0.5" CenterY="0.5"/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </LinearGradientBrush.RelativeTransform>
+                                    <GradientStop Color="#FF754057"/>
+                                    <GradientStop Color="#FF2462E6" Offset="1"/>
+                                </LinearGradientBrush>
+                            </TextBlock.Foreground>Highscores:</TextBlock>
+                        
                         <Grid Margin="0,15,0,0" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="170"/>
+                                <RowDefinition Height="350"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Background="#FFA492A4" Width="280" Margin="0,0,0,8">
+                            <Grid Grid.Row="0" Width="600" Margin="0,30,0,0">
+                                <Grid.Background>
+                                    <SolidColorBrush Color="#FFA09CA0" Opacity="0.5"/>
+                                </Grid.Background>
                                 <ItemsControl ItemsSource="{Binding Source = {StaticResource HighScoreListViewSource}}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <DockPanel Margin="7">
-                                                <TextBlock Text="{Binding PlayerName}" DockPanel.Dock="Left" FontSize="18"></TextBlock>
-                                                <TextBlock Text="{Binding Score}" DockPanel.Dock="Right" FontSize="18" HorizontalAlignment="Right"></TextBlock>
+                                                <TextBlock Text="{Binding PlayerName}" DockPanel.Dock="Left" FontSize="70" FontWeight="Bold" Panel.ZIndex="3">
+                                                    <TextBlock.Foreground>
+                                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                            <LinearGradientBrush.RelativeTransform>
+                                                                <TransformGroup>
+                                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                                    <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                                    <RotateTransform Angle="116.565" CenterX="0.5" CenterY="0.5"/>
+                                                                    <TranslateTransform/>
+                                                                </TransformGroup>
+                                                            </LinearGradientBrush.RelativeTransform>
+                                                            <GradientStop Color="#FF754057"/>
+                                                            <GradientStop Color="#FF2462E6" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </TextBlock.Foreground></TextBlock>
+                                                <TextBlock Text="{Binding Score}" DockPanel.Dock="Right" FontSize="70" FontWeight="Bold" HorizontalAlignment="Right" Panel.ZIndex="3">
+                                                    <TextBlock.Foreground>
+                                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                            <LinearGradientBrush.RelativeTransform>
+                                                                <TransformGroup>
+                                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                                    <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                                    <RotateTransform Angle="94.574" CenterX="0.5" CenterY="0.5"/>
+                                                                    <TranslateTransform/>
+                                                                </TransformGroup>
+                                                            </LinearGradientBrush.RelativeTransform>
+                                                            <GradientStop Color="#FF754057"/>
+                                                            <GradientStop Color="#FF2462E6" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </TextBlock.Foreground></TextBlock>
                                             </DockPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -135,24 +242,58 @@
 
                             </Grid>
                             <Grid Grid.Row="1">
-                                <Button HorizontalAlignment="center" BorderThickness="0" Name="btnHideHighscoreList" Click="BtnHideHighscoreList_Click" Background="#FFC18AEA">
+                                <Button Margin="0,60,0,0" HorizontalAlignment="center" BorderThickness="0" Name="btnHideHighscoreList" Click="BtnHideHighscoreList_Click" Background="{x:Null}">
                                     <Border 
                                     BorderThickness="2" 
-                                    Width="Auto" 
-                                    Height="30"
+                                    Height="50"
+                                    Width="150"
                                     Name="bdrHideHighscoreButton"
                                     Panel.ZIndex="1"
                                     Padding="3,0">
-                                        <Border.BorderBrush>
-                                            <LinearGradientBrush EndPoint="0.2,1" StartPoint="0.2,0">
-                                                <GradientStop Color="White" Offset="0"/>
-                                                <GradientStop Color="#FF19F1CE" Offset="1"/>
+                                        <Border.Background>
+                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                <LinearGradientBrush.RelativeTransform>
+                                                    <TransformGroup>
+                                                        <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                        <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                        <RotateTransform Angle="-38.073" CenterX="0.5" CenterY="0.5"/>
+                                                        <TranslateTransform/>
+                                                    </TransformGroup>
+                                                </LinearGradientBrush.RelativeTransform>
+                                                <GradientStop Color="#FF8B65E2" Offset="0"/>
+                                                <GradientStop Color="#FF4F62A7" Offset="1"/>
                                             </LinearGradientBrush>
-                                        </Border.BorderBrush>
-                                        <TextBlock FontWeight="Bold" FontSize="15" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center">Return!</TextBlock>
+                                        </Border.Background>
+                                        <TextBlock FontWeight="Bold" FontSize="30" Foreground="#FFF1F0F1" HorizontalAlignment="Center" VerticalAlignment="Center">Return!</TextBlock>
                                     </Border>
                                 </Button>
                             </Grid>
+                            <Image Panel.ZIndex="-1" Source="./resources/images/snakeface.png" Width="250" Margin="-430,-130,0,0" RenderTransformOrigin="0.5,0.5">
+                                <Image.RenderTransform>
+                                    <RotateTransform CenterX="12" CenterY="12" />
+                                </Image.RenderTransform>
+                                <Image.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <Trigger Property="Image.IsEnabled" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation
+                                                            Storyboard.TargetProperty="RenderTransform.Angle"
+                                                            From="-5"
+                                                            To="5"
+                                                            Duration="0:0:5"
+                                                            AutoReverse="True"
+                                                            RepeatBehavior="Forever"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
                         </Grid>
                     </StackPanel>
                 </Border>
@@ -160,87 +301,155 @@
                 <!--Insert Playername-->
                 <Border BorderBrush="AliceBlue" 
                         BorderThickness="2" 
-                        Width="300" 
-                        Height="300"
+                        Width="700" 
+                        Height="700"
                         Canvas.Left="50"
                         Canvas.Top="50"
                         Name="bdrInsertPlayerName"
                         Panel.ZIndex="1"
                     Visibility="Collapsed">
-                    <StackPanel Orientation="Vertical" Background="#FFDEB5B5">
-                        <Image Source="./resources/icons/snake_icon48.png" Width="48" Margin="0,10,0,0"></Image>
-                        <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,-12,0,0">A new Awesome Player!</TextBlock>
-                        <TextBlock FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" Margin="0,10,0,0">Write your name</TextBlock>
-                        <TextBlock FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" Margin="0,10,0,0">and add it to the hall of fame!</TextBlock>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel.Background>
+                            <ImageBrush ImageSource="./resources/images/backgroundCuteSnake.png"/>
+                        </StackPanel.Background>
+                        <TextBlock FontWeight="Bold" FontSize="40" HorizontalAlignment="Center" Margin="0,130,0,0" Foreground="#FFF1F0F1">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="10"/>
+                            </TextBlock.Effect>A new Awesome Player!</TextBlock>
+                        <TextBlock FontWeight="Bold" FontSize="30" HorizontalAlignment="Center" Margin="0,20,0,0" Foreground="#FFF1F0F1">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="10"/>
+                            </TextBlock.Effect>Write your name and</TextBlock>
+                        <TextBlock FontWeight="Bold" FontSize="30" HorizontalAlignment="Center" Margin="0,0,0,0" Foreground="#FFF1F0F1">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="10"/>
+                            </TextBlock.Effect>add it to the hall of fame!</TextBlock>
+                        <Image Panel.ZIndex="-1" Source="./resources/images/snakeface.png" Width="250" Margin="-430,-110,0,0" RenderTransformOrigin="0.5,0.5">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="12" CenterY="12" />
+                            </Image.RenderTransform>
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsEnabled" Value="True">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation
+                                                            Storyboard.TargetProperty="RenderTransform.Angle"
+                                                            From="-5"
+                                                            To="5"
+                                                            Duration="0:0:5"
+                                                            AutoReverse="True"
+                                                            RepeatBehavior="Forever"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
                         <TextBox 
                             Name="txtPlayerName" 
                             FontWeight="Bold" 
                             MaxLength="10"
-                            Margin="20"
                             HorizontalAlignment="Center"
-                            Foreground="Black"
-                            Width="120"
-                            Height="30"
-                            FontSize="20">
+                            Foreground="#FF3C29C3"
+                            Width="350"
+                            Height="60"
+                            FontSize="40" Background="White">
                         </TextBox>
-                        <Button HorizontalAlignment="center" 
-                            BorderThickness="0" 
-                            Name="btnInsertPlayerNameButton" 
-                            Click="BtnAddToHighscoreList_Click" 
-                            Background="#FFC18AEA">
+                        <Button Margin="0,60,0,0" HorizontalAlignment="center" BorderThickness="0" Name="btnInsertPlayerNameButton" Click="BtnAddToHighscoreList_Click" Background="{x:Null}">
                             <Border 
-                                BorderThickness="2" 
-                                Width="Auto" 
-                                Height="30"
-                                Name="bdrInsertPlayerNameButton"
-                                Panel.ZIndex="1"
-                                Padding="3,0">
+                                    BorderThickness="2" 
+                                    Height="50"
+                                    Width="150"
+                                    Panel.ZIndex="1"
+                                    Padding="3,0">
+                                <Border.Background>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                <RotateTransform Angle="-38.073" CenterX="0.5" CenterY="0.5"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="#FF8B65E2" Offset="0"/>
+                                        <GradientStop Color="#FF4F62A7" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
                                 <Border.BorderBrush>
                                     <LinearGradientBrush EndPoint="0.2,1" StartPoint="0.2,0">
                                         <GradientStop Color="White" Offset="0"/>
                                         <GradientStop Color="#FF19F1CE" Offset="1"/>
                                     </LinearGradientBrush>
                                 </Border.BorderBrush>
-                                <TextBlock FontWeight="Bold" FontSize="15" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center">Hall of fame!</TextBlock>
+                                <TextBlock FontWeight="Bold" FontSize="30" Foreground="#FFF1F0F1" HorizontalAlignment="Center" VerticalAlignment="Center">Add me!</TextBlock>
                             </Border>
                         </Button>
                     </StackPanel>
                 </Border>
 
                 <!--Oh no you died screen!-->
-                <Border BorderBrush="#FFBFBFBF" 
+                <Border 
                         BorderThickness="2" 
-                        Width="300" 
-                        Height="300"
+                        Width="700" 
+                        Height="700"
                         Canvas.Left="50"
                         Canvas.Top="50"
                         Name="bdrEndOfGame"
                         Panel.ZIndex="1"
                     Visibility="Collapsed">
-
                     <StackPanel Orientation="Vertical">
                         <StackPanel.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <LinearGradientBrush.RelativeTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform CenterY="0.5" CenterX="0.5"/>
-                                        <SkewTransform CenterX="0.5" CenterY="0.5"/>
-                                        <RotateTransform Angle="13.241" CenterX="0.5" CenterY="0.5"/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
-                                </LinearGradientBrush.RelativeTransform>
-                                <GradientStop Color="#FF65E42E"/>
-                                <GradientStop Color="White" Offset="1"/>
-                            </LinearGradientBrush>
+                            <ImageBrush ImageSource="./resources/images/backgroundCuteSnake.png"/>
                         </StackPanel.Background>
-                        <Image Source="./resources/icons/snake_icon256.png" Width="120" Margin="0,10,0,0"></Image>
-                        <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,-8,0,0">Awesome job!</TextBlock>
-                        <TextBlock FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" Margin="0,10,0,0">Your score:</TextBlock>
-                        <TextBlock Name="tbFinalScore" FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" Foreground="Maroon" Margin="0,30,0,0">0</TextBlock>
-                        <TextBlock FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" Margin="0,30,0,0">Press SPACE to start over!</TextBlock>
+                        <TextBlock FontWeight="Bold" FontSize="40" HorizontalAlignment="Center" Margin="0,40,0,0" Foreground="#FF823582">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="10"/>
+                            </TextBlock.Effect>Not good enough..</TextBlock>
+                        <TextBlock FontWeight="Bold" FontSize="40" HorizontalAlignment="Center" Margin="0,10,0,0" Foreground="#FF803E80">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="10"/>
+                            </TextBlock.Effect>Your score:</TextBlock>
+                        <TextBlock Name="tbFinalScore" FontWeight="Bold" FontSize="60" HorizontalAlignment="Center" Foreground="#FF50287B" Margin="0,30,0,0">0</TextBlock>
+                        <Image x:Name="Snakeface" Source="./resources/images/snakeface.png" Width="250" Margin="-430,-90,0,0" RenderTransformOrigin="0.5,0.5">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="12" CenterY="12" />
+                            </Image.RenderTransform>
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsEnabled" Value="True">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation
+                                                            Storyboard.TargetProperty="RenderTransform.Angle"
+                                                            From="-5"
+                                                            To="10"
+                                                            Duration="0:0:3"
+                                                            AutoReverse="True"
+                                                            RepeatBehavior="Forever"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock FontSize="30" HorizontalAlignment="Center" Margin="0,250,0,0" Foreground="#FF598BED" TextDecorations="Underline" FontWeight="Bold">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="10"/>
+                            </TextBlock.Effect>Press SPACE to start over!</TextBlock>
                     </StackPanel>
                 </Border>
             </Canvas>
         </Border>
     </DockPanel>
+    
 </Window>

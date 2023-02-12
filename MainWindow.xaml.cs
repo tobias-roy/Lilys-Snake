@@ -1,36 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Xml.Serialization;
-using static System.Formats.Asn1.AsnWriter;
-using System.Resources;
-using System.Xml.Linq;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows.Media.Animation;
 
 namespace Snaek
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private System.Windows.Threading.DispatcherTimer gameTickTimer = new System.Windows.Threading.DispatcherTimer();
-        const int SnakeSquareSize = 20;
+        const int SnakeSquareSize = 40;
         const int SnakeStartLength = 3;
         const int SnakeStartSpeed = 400;
         const int SnakeSpeedThreshold = 100;
@@ -38,8 +24,8 @@ namespace Snaek
 
         private UIElement snakeFood = null;
         private SolidColorBrush foodBrush = Brushes.Red;
-        private SolidColorBrush snakeBodyBrush = Brushes.Green;
-        private SolidColorBrush snakeHeadBrush = Brushes.YellowGreen;
+        private SolidColorBrush snakeBodyBrush = new SolidColorBrush(Color.FromRgb(94, 135, 214));
+        private SolidColorBrush snakeHeadBrush = new SolidColorBrush(Color.FromRgb(15, 61, 196));
         private List<SnakePart> snakeParts = new List<SnakePart>();
 
         public enum SnakeDirection { Left, Right, Up, Down }
@@ -302,7 +288,7 @@ namespace Snaek
             {
                 "resources/audio/snake/eating/Mmh.wav",
                 "resources/audio/snake/eating/Laekkert.wav",
-                "resources/audio/snake/eating/rawp.wav",
+                "resources/audio/snake/eating/haps.wav",
                 "resources/audio/snake/eating/SaftigtAeble.wav"
             };
             snakeVoice.Play(eatingSounds[rnd.Next(0, 4)], 50);
