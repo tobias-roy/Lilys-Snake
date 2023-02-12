@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,6 +33,7 @@ namespace Snaek
         private int snakeLength;
         private int currentScore = 0;
         private Random rnd = new Random();
+        private bool changedDirection = false;
 
         public Sound snakeVoice = new();
         public Sound music = new();
@@ -54,6 +56,7 @@ namespace Snaek
 
         private void GameTickTimer_Tick(object sender, EventArgs e)
         {
+            changedDirection = false;
             MoveSnake();
         }
 
@@ -105,10 +108,10 @@ namespace Snaek
 
         private void LoadHighscoreList()
         {
-            if (System.IO.File.Exists("snake_highscorelist.xml"))
+            if (File.Exists("snake_highscorelist.xml"))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(List<SnakeHighscore>));
-                using (System.IO.Stream reader = new System.IO.FileStream("snake_highscorelist.xml", System.IO.FileMode.Open))
+                using (Stream reader = new FileStream("snake_highscorelist.xml", FileMode.Open))
                 {
                     List<SnakeHighscore> tempList = (List<SnakeHighscore>)serializer.Deserialize(reader);
                     this.HighscoreList.Clear();
@@ -121,7 +124,7 @@ namespace Snaek
         private void SaveHighscoreList()
         {
             XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<SnakeHighscore>));
-            using (System.IO.Stream writer = new System.IO.FileStream("snake_highscorelist.xml", System.IO.FileMode.Create))
+            using (Stream writer = new FileStream("snake_highscorelist.xml", FileMode.Create))
             {
                 serializer.Serialize(writer, HighscoreList);
             }
@@ -159,7 +162,6 @@ namespace Snaek
             //we make sure that they use the body brush
             foreach (SnakePart snakePart in snakeParts)
             {
-                //(snakePart.UiElement as Rectangle).Fill = snakeBodyBrush;
                 (snakePart.UiElement as Ellipse).Fill = snakeBodyBrush;
                 snakePart.IsHead = false;
             }
@@ -186,7 +188,6 @@ namespace Snaek
             });
             //And then draw the motherfucker
             DrawSnake();
-            //This will run later
             DoCollisionCheck();
         }
 
@@ -212,9 +213,9 @@ namespace Snaek
             {
                 Width = SnakeSquareSize,
                 Height = SnakeSquareSize,
-                Fill = foodBrush,
+                Fill = foodBrush
             };
-
+            GameArea.Children.Add(snakeFood);
             Canvas.SetTop(snakeFood, foodPosition.Y);
             Canvas.SetLeft(snakeFood, foodPosition.X);
         }
@@ -225,17 +226,17 @@ namespace Snaek
             switch (e.Key)
             {
                 case Key.Up:
-                    if (snakeDirection != SnakeDirection.Down)
-                        snakeDirection = SnakeDirection.Up; break;
+                    if (!changedDirection && snakeDirection != SnakeDirection.Down)
+                        snakeDirection = SnakeDirection.Up; changedDirection = true; break;
                 case Key.Down:
-                    if (snakeDirection != SnakeDirection.Up)
-                        snakeDirection = SnakeDirection.Down; break;
+                    if (!changedDirection && snakeDirection != SnakeDirection.Up)
+                        snakeDirection = SnakeDirection.Down; changedDirection = true; break;
                 case Key.Left:
-                    if (snakeDirection != SnakeDirection.Right)
-                        snakeDirection = SnakeDirection.Left; break;
+                    if (!changedDirection && snakeDirection != SnakeDirection.Right)
+                        snakeDirection = SnakeDirection.Left; changedDirection = true; break;
                 case Key.Right:
-                    if (snakeDirection != SnakeDirection.Left)
-                        snakeDirection = SnakeDirection.Right; break;
+                    if (!changedDirection && snakeDirection != SnakeDirection.Left)
+                        snakeDirection = SnakeDirection.Right; changedDirection = true; break;
                 case Key.Space:
                     StartNewGame();
                     break;
