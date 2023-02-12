@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -106,10 +105,10 @@ namespace Snaek
 
         private void LoadHighscoreList()
         {
-            if (File.Exists("snake_highscorelist.xml"))
+            if (System.IO.File.Exists("snake_highscorelist.xml"))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(List<SnakeHighscore>));
-                using (Stream reader = new FileStream("snake_highscorelist.xml", FileMode.Open))
+                using (System.IO.Stream reader = new System.IO.FileStream("snake_highscorelist.xml", System.IO.FileMode.Open))
                 {
                     List<SnakeHighscore> tempList = (List<SnakeHighscore>)serializer.Deserialize(reader);
                     this.HighscoreList.Clear();
@@ -122,7 +121,7 @@ namespace Snaek
         private void SaveHighscoreList()
         {
             XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<SnakeHighscore>));
-            using (Stream writer = new FileStream("snake_highscorelist.xml", FileMode.Create))
+            using (System.IO.Stream writer = new System.IO.FileStream("snake_highscorelist.xml", System.IO.FileMode.Create))
             {
                 serializer.Serialize(writer, HighscoreList);
             }
@@ -134,7 +133,6 @@ namespace Snaek
             {
                 if (snakePart.UiElement == null)
                 {
-                    //snakePart.UiElement = new Rectangle()
                     snakePart.UiElement = new Ellipse()
                     {
                         Width = SnakeSquareSize,
@@ -214,9 +212,9 @@ namespace Snaek
             {
                 Width = SnakeSquareSize,
                 Height = SnakeSquareSize,
-                Fill = foodBrush
+                Fill = foodBrush,
             };
-            GameArea.Children.Add(snakeFood);
+
             Canvas.SetTop(snakeFood, foodPosition.Y);
             Canvas.SetLeft(snakeFood, foodPosition.X);
         }
