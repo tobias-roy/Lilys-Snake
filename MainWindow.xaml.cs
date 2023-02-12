@@ -33,7 +33,7 @@ namespace Snaek
         private int snakeLength;
         private int currentScore = 0;
         private Random rnd = new Random();
-        private bool changedDirection = false;
+        private int changedDirection = 0;
 
         public Sound snakeVoice = new();
         public Sound music = new();
@@ -56,7 +56,7 @@ namespace Snaek
 
         private void GameTickTimer_Tick(object sender, EventArgs e)
         {
-            changedDirection = false;
+            changedDirection = 0;
             MoveSnake();
         }
 
@@ -226,17 +226,17 @@ namespace Snaek
             switch (e.Key)
             {
                 case Key.Up:
-                    if (!changedDirection && snakeDirection != SnakeDirection.Down)
-                        snakeDirection = SnakeDirection.Up; changedDirection = true; break;
+                    if (changedDirection < 2 && snakeDirection != SnakeDirection.Down)
+                        snakeDirection = SnakeDirection.Up; changedDirection++; break;
                 case Key.Down:
-                    if (!changedDirection && snakeDirection != SnakeDirection.Up)
-                        snakeDirection = SnakeDirection.Down; changedDirection = true; break;
+                    if (changedDirection < 2 && snakeDirection != SnakeDirection.Up)
+                        snakeDirection = SnakeDirection.Down; changedDirection++; break;
                 case Key.Left:
-                    if (!changedDirection && snakeDirection != SnakeDirection.Right)
-                        snakeDirection = SnakeDirection.Left; changedDirection = true; break;
+                    if (changedDirection < 2 && snakeDirection != SnakeDirection.Right)
+                        snakeDirection = SnakeDirection.Left; changedDirection++; break;
                 case Key.Right:
-                    if (!changedDirection && snakeDirection != SnakeDirection.Left)
-                        snakeDirection = SnakeDirection.Right; changedDirection = true; break;
+                    if (changedDirection < 2 && snakeDirection != SnakeDirection.Left)
+                        snakeDirection = SnakeDirection.Right; changedDirection++; break;
                 case Key.Space:
                     StartNewGame();
                     break;
