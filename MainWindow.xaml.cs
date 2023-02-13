@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -209,12 +210,19 @@ namespace Snaek
         private void DrawSnakeFood()
         {
             Point foodPosition = GetNextFoodPosition();
-            snakeFood = new Ellipse()
+            System.Windows.Shapes.Path applePath = new();
+            string appleData = "M 22,8 C 19.679,8 18.035,9.009 17.062,9.857 17.47,5.698 20,4 20,4 L 18,3 C 18,3 15.42,5.587 15.048,9.955 14.09,9.089 12.411,8 10,8 6,8 3,11 4,17 c 1.315,7.892 5,11 8,11 2,0 4,-2 4,-2 0,0 2,2 4,2 3,0 6.685,-3.108 8,-11 1,-6 -2,-9 -6,-9 z";
+            var converter = TypeDescriptor.GetConverter(typeof(Geometry));
+            applePath.Data = (Geometry)converter.ConvertFrom(appleData);
+            snakeFood = new System.Windows.Shapes.Path()
             {
-                Width = SnakeSquareSize,
-                Height = SnakeSquareSize,
-                Fill = foodBrush
+                Data = applePath.Data,
+                Fill = foodBrush,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
             };
+
+
             GameArea.Children.Add(snakeFood);
             Canvas.SetTop(snakeFood, foodPosition.Y);
             Canvas.SetLeft(snakeFood, foodPosition.X);
