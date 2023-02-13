@@ -4,13 +4,17 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Media;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml.Serialization;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Snaek
 {
@@ -34,11 +38,13 @@ namespace Snaek
         private int snakeLength;
         private int currentScore = 0;
         private Random rnd = new Random();
-        private int changedDirection = 0;
+        private bool paused = false;
+        private bool isGamePlaying = false;
+        private bool directionChosen = false;
 
         public Sound snakeVoice = new();
         public Sound music = new();
-
+ 
 
         public MainWindow()
         {
@@ -51,14 +57,14 @@ namespace Snaek
         private async Task BackgroundMusicAsync()
         {
             await Task.Delay(500);
-            Sound music = new();
             music.PlayLoop(@"resources/audio/music/backgroundMusic.wav", 10);
+           
         }
 
         private void GameTickTimer_Tick(object sender, EventArgs e)
         {
-            changedDirection = 0;
             MoveSnake();
+            directionChosen = false;
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
@@ -89,6 +95,7 @@ namespace Snaek
             gameTickTimer.Interval = TimeSpan.FromMilliseconds(SnakeStartSpeed);
 
             //Draw the snake again and new food
+            isGamePlaying = true;
             DrawSnake();
             DrawSnakeFood();
 
@@ -137,12 +144,36 @@ namespace Snaek
             {
                 if (snakePart.UiElement == null)
                 {
-                    snakePart.UiElement = new Ellipse()
+                    System.Windows.Shapes.Path snakeface = new();
+                    string snakefaceDataUp = "M 12 40 L 26 40 L 29 39 L 30 38 L 31 35 L 31 33 L 30 19 L 31 18 L 31 17 L 30 16 L 28 10 L 27 9 L 25 8 L 21 7 L 20 7 L 19 7 L 22 0 L 21 1 L 19 5 L 17 1 L 16 0 L 19 7 L 18 7 L 17 7 L 13 8 L 11 9 L 10 10 L 8 16 L 7 17 L 7 18 L 8 19 L 7 33 L 7 35 L 8 38 L 9 39 L 12 40";
+                    string snakefaceDataRight = "M 0 12 L 0 26 L 1 29 L 2 30 L 5 31 L 7 31 L 21 30 L 22 31 L 23 31 L 24 30 L 30 28 L 31 27 L 32 25 L 33 21 L 33 20 L 33 19 L 40 22 L 39 21 L 35 19 L 39 17 L 40 16 L 33 19 L 33 18 L 33 17 L 32 13 L 31 11 L 30 10 L 24 8 L 23 7 L 22 7 L 21 8 L 7 7 L 5 7 L 2 8 L 1 9 L 0 12";
+                    string snakefaceDataDown = "M 29 0 L 15 0 L 12 1 L 11 2 L 10 5 L 10 7 L 11 21 L 10 22 L 10 23 L 11 24 L 13 30 L 14 31 L 16 32 L 20 33 L 21 33 L 22 33 L 19 40 L 20 39 L 22 35 L 24 39 L 25 40 L 22 33 L 23 33 L 24 33 L 28 32 L 30 31 L 31 30 L 33 24 L 34 23 L 34 22 L 33 21 L 34 7 L 34 5 L 33 2 L 32 1 L 29 0";
+                    string snakefaceDataLeft = "M 40 27 L 40 13 L 39 10 L 38 9 L 35 8 L 33 8 L 19 9 L 18 8 L 17 8 L 16 9 L 10 11 L 9 12 L 8 14 L 7 18 L 7 19 L 7 20 L 0 17 L 1 18 L 5 20 L 1 22 L 0 23 L 7 20 L 7 21 L 7 22 L 8 26 L 9 28 L 10 29 L 16 31 L 17 32 L 18 32 L 19 31 L 33 32 L 35 32 L 38 31 L 39 30 L 40 27";
+                    var converter = TypeDescriptor.GetConverter(typeof(Geometry));
+                    switch (snakeDirection)
                     {
-                        Width = SnakeSquareSize,
-                        Height = SnakeSquareSize,
-                        Fill = (snakePart.IsHead ? snakeHeadBrush : snakeBodyBrush)
+                        case SnakeDirection.Left:
+                            snakeface.Data = (Geometry)converter.ConvertFrom(snakefaceDataLeft);
+                            break;
+                        case SnakeDirection.Right:
+                            snakeface.Data = (Geometry)converter.ConvertFrom(snakefaceDataRight);
+                            break;
+                        case SnakeDirection.Up:
+                            snakeface.Data = (Geometry)converter.ConvertFrom(snakefaceDataUp);
+                            break;
+                        case SnakeDirection.Down:
+                            snakeface.Data = (Geometry)converter.ConvertFrom(snakefaceDataDown);
+                            break;
+                    }
+                    
+                    snakePart.UiElement = new System.Windows.Shapes.Path()
+                    {
+                        Data = snakeface.Data,
+                        Fill = (snakePart.IsHead ? snakeHeadBrush : snakeBodyBrush),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
                     };
+
                     GameArea.Children.Add(snakePart.UiElement);
                     Canvas.SetTop(snakePart.UiElement, snakePart.Position.Y);
                     Canvas.SetLeft(snakePart.UiElement, snakePart.Position.X);
@@ -161,31 +192,58 @@ namespace Snaek
             //Next up, we'll add a new element to the snake, which will be the (new) head
             //Therefore, we mark all existing parts as non-head (body) elements and then
             //we make sure that they use the body brush
+            System.Windows.Shapes.Path snakebody = new();
+            string snakebodyLeftRight = "M 0 27 L 40 27 L 40 13 L 0 13 L 0 27";
+            string snakebodyUpDown = "M 13 0 L 13 40 L 27 40 L 27 0 L 13 0";
+            var converter = TypeDescriptor.GetConverter(typeof(Geometry));
+
             foreach (SnakePart snakePart in snakeParts)
             {
-                (snakePart.UiElement as Ellipse).Fill = snakeBodyBrush;
+                switch (snakePart.Direction)
+                {
+                    case Direction.Up or Direction.Down:
+                        snakebody.Data = (Geometry)converter.ConvertFrom(snakebodyUpDown);
+                        (snakePart.UiElement as System.Windows.Shapes.Path).Data = snakebody.Data;
+                        break;
+
+                    case Direction.Left or Direction.Right:
+                        snakebody.Data = (Geometry)converter.ConvertFrom(snakebodyLeftRight);
+                        (snakePart.UiElement as System.Windows.Shapes.Path).Data = snakebody.Data;
+                        break;
+                }
+                (snakePart.UiElement as System.Windows.Shapes.Path).Fill = snakeBodyBrush;
                 snakePart.IsHead = false;
             }
             //Determine in which direction to expand the snake, based on the current direction
             SnakePart snakeHead = snakeParts[snakeParts.Count - 1];
             double nextX = snakeHead.Position.X;
             double nextY = snakeHead.Position.Y;
+            Direction dir = snakeHead.Direction;
             switch (snakeDirection)
             {
                 case SnakeDirection.Left:
-                    nextX -= SnakeSquareSize; break;
+                    nextX -= SnakeSquareSize;
+                    dir = Direction.Left;
+                    break;
                 case SnakeDirection.Right:
-                    nextX += SnakeSquareSize; break;
+                    nextX += SnakeSquareSize;
+                    dir = Direction.Right;
+                    break;
                 case SnakeDirection.Up:
-                    nextY -= SnakeSquareSize; break;
+                    nextY -= SnakeSquareSize;
+                    dir = Direction.Up;
+                    break;
                 case SnakeDirection.Down:
-                    nextY += SnakeSquareSize; break;
+                    nextY += SnakeSquareSize;
+                    dir = Direction.Down;
+                    break;
             }
             //Now add the new head part to our list of snake parts...
             snakeParts.Add(new SnakePart()
             {
                 Position = new Point(nextX, nextY),
-                IsHead = true
+                IsHead = true,
+                Direction = dir
             });
             //And then draw the motherfucker
             DrawSnake();
@@ -234,26 +292,42 @@ namespace Snaek
             switch (e.Key)
             {
                 case Key.Up:
-                    if (changedDirection < 2 && snakeDirection != SnakeDirection.Down)
-                        snakeDirection = SnakeDirection.Up; changedDirection++; break;
+                    if (snakeDirection != SnakeDirection.Down && !directionChosen)
+                        snakeDirection = SnakeDirection.Up; directionChosen = true;
+                    break;
                 case Key.Down:
-                    if (changedDirection < 2 && snakeDirection != SnakeDirection.Up)
-                        snakeDirection = SnakeDirection.Down; changedDirection++; break;
+                    if (snakeDirection != SnakeDirection.Up && !directionChosen)
+                        snakeDirection = SnakeDirection.Down; directionChosen = true;
+                    break;
                 case Key.Left:
-                    if (changedDirection < 2 && snakeDirection != SnakeDirection.Right)
-                        snakeDirection = SnakeDirection.Left; changedDirection++; break;
+                    if (snakeDirection != SnakeDirection.Right && !directionChosen)
+                        snakeDirection = SnakeDirection.Left; directionChosen = true;
+                    break;
                 case Key.Right:
-                    if (changedDirection < 2 && snakeDirection != SnakeDirection.Left)
-                        snakeDirection = SnakeDirection.Right; changedDirection++; break;
+                    if (snakeDirection != SnakeDirection.Left && !directionChosen)
+                        snakeDirection = SnakeDirection.Right; directionChosen = true;
+                    break;
                 case Key.Space:
                     StartNewGame();
                     break;
-                    //case Key.Tab:
-                    //Implement scoreboard viewing
+                case Key.Tab:
+                    PauseMenu();
+                    break;
             }
-            if (snakeDirection != originalSnakeDirection)
+        }
+
+        private void PauseMenu()
+        {
+            if (!paused && isGamePlaying)
             {
-                MoveSnake();
+                bdrPauseMenu.Visibility = Visibility.Visible;
+                gameTickTimer.Stop();
+                paused = !paused;
+            } else if (paused && isGamePlaying)
+            {
+                bdrPauseMenu.Visibility = Visibility.Collapsed;
+                gameTickTimer.Start();
+                paused = !paused;
             }
         }
 
@@ -311,6 +385,7 @@ namespace Snaek
 
         private void EndGame()
         {
+            isGamePlaying = false;
             bool isNewHighscore = false;
             if (currentScore > 0)
             {

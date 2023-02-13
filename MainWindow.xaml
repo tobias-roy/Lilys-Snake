@@ -16,6 +16,26 @@
                 <scm:SortDescription Direction="Descending" PropertyName="Score"/>
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
+            <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
+            <Style x:Key="BlankButton" TargetType="Button">
+                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Name="border" 
+                            BorderThickness="0"
+                            Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+            </Setter>
+            </Style>
     </Window.Resources>
     <DockPanel Background="#FF352E50">
         <Grid DockPanel.Dock="Top">
@@ -103,7 +123,7 @@
                                     <GradientStop Color="#FF754057"/>
                                     <GradientStop Color="#FF2462E6" Offset="0.993"/>
                                 </LinearGradientBrush>
-                        </TextBlock.Foreground>Press SPACE to start!</TextBlock>
+                            </TextBlock.Foreground>Press SPACE to start!</TextBlock>
                         <Image Source="./resources/images/snakeface.png" Width="250" Margin="-430,-120,0,0" RenderTransformOrigin="0.5,0.5">
                             <Image.RenderTransform>
                                 <RotateTransform CenterX="12" CenterY="12" />
@@ -191,7 +211,7 @@
                                     <GradientStop Color="#FF2462E6" Offset="1"/>
                                 </LinearGradientBrush>
                             </TextBlock.Foreground>Highscores:</TextBlock>
-                        
+
                         <Grid Margin="0,15,0,0" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="350"/>
@@ -448,8 +468,59 @@
                             </TextBlock.Effect>Press SPACE to start over!</TextBlock>
                     </StackPanel>
                 </Border>
+
+                <!--Pause menu!-->
+                <Border 
+                        BorderThickness="2" 
+                        Width="700" 
+                        Height="700"
+                        Canvas.Left="50"
+                        Canvas.Top="50"
+                        Name="bdrPauseMenu"
+                        Panel.ZIndex="1"
+                    Visibility="Collapsed">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel.Background>
+                            <ImageBrush ImageSource="./resources/images/backgroundCuteSnake.png"/>
+                        </StackPanel.Background>
+                        <TextBlock Focusable="False" FontWeight="Bold" FontSize="40" HorizontalAlignment="Center" Margin="0,40,0,0" Foreground="#FF823582">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="10"/>
+                            </TextBlock.Effect>Game paused</TextBlock>
+                        <Image Focusable="False" Source="./resources/images/snakeface.png" Width="250" Margin="-430,80,0,0" RenderTransformOrigin="0.5,0.5">
+                            <Image.RenderTransform>
+                                <RotateTransform CenterX="12" CenterY="12" />
+                            </Image.RenderTransform>
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsEnabled" Value="True">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation
+                                                            Storyboard.TargetProperty="RenderTransform.Angle"
+                                                            From="-5"
+                                                            To="10"
+                                                            Duration="0:0:3"
+                                                            AutoReverse="True"
+                                                            RepeatBehavior="Forever"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock Focusable="False" FontSize="30" HorizontalAlignment="Center" Margin="0,250,0,0" Foreground="#FF598BED" TextDecorations="Underline" FontWeight="Bold">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="10"/>
+                            </TextBlock.Effect>Press TAB to resume</TextBlock>
+                    </StackPanel>
+                </Border>
             </Canvas>
         </Border>
     </DockPanel>
-    
+
 </Window>
