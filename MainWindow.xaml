@@ -179,7 +179,16 @@
                                 </Border>
                             </Button>
                         </Grid>
-                        <CheckBox Focusable="False" x:Name="CbEnableFastfood" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked"></CheckBox>
+                        <CheckBox Visibility="Hidden" Focusable="False" x:Name="CbEnableFastfood" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" HorizontalAlignment="Right" BorderBrush="#FF949292" Width="25" Height="25" MinWidth="25" MinHeight="25" Background="White" Margin="0,0,5,0" VerticalContentAlignment="Center" MaxWidth="25" MaxHeight="25" UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5" HorizontalContentAlignment="Center">
+                            <CheckBox.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="2" ScaleY="2"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </CheckBox.RenderTransform>
+                        </CheckBox>
                     </StackPanel>
                 </Border>
 
