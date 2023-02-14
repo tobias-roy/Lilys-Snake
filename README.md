@@ -16,5 +16,6 @@ My lovely daughter Lily
 #### Artwork
 Created by Stable Diffusion 1.5 with various prompts. @ https://playgroundai.com/
 
-
+#### Custom Snake
+Made possible by the svg tool by Yann Armelin @ https://github.com/Yqnn/svg-path-editor
 
