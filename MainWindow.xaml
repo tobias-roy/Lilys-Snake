@@ -179,6 +179,7 @@
                                 </Border>
                             </Button>
                         </Grid>
+                        <CheckBox Focusable="False" x:Name="CbEnableFastfood" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked"></CheckBox>
                     </StackPanel>
                 </Border>
 
@@ -478,7 +479,7 @@
                         Canvas.Top="50"
                         Name="bdrPauseMenu"
                         Panel.ZIndex="1"
-                    Visibility="Visible">
+                    Visibility="Collapsed">
                     <StackPanel Orientation="Vertical">
                         <StackPanel.Background>
                             <ImageBrush ImageSource="./resources/images/backgroundCuteSnake.png"/>
