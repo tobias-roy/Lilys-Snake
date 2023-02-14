@@ -12,7 +12,6 @@ namespace Snaek
         public System.Windows.Shapes.Path UiElement { get; set; }
         public Point Position { get; set; }
         public bool IsHead { get; set; }
-        public Direction Direction { get; set; } 
     }
         public enum Direction
     {

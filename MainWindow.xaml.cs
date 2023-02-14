@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Media;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 using System.Xml.Serialization;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Snaek
 {
@@ -42,23 +40,16 @@ namespace Snaek
         private bool isGamePlaying = false;
         private bool directionChosen = false;
 
-        public Sound snakeVoice = new();
-        public Sound music = new();
+        public AudioPlayer effectPlayer = new();
+        public AudioPlayer musicPlayer = new();
  
 
         public MainWindow()
         {
-            Task.Run(() => BackgroundMusicAsync());
+            musicPlayer.PlayLoop(@"resources/audio/music/backgroundMusic.wav", 10);
             InitializeComponent();
             gameTickTimer.Tick += GameTickTimer_Tick;
             LoadHighscoreList();
-        }
-
-        private async Task BackgroundMusicAsync()
-        {
-            await Task.Delay(500);
-            music.PlayLoop(@"resources/audio/music/backgroundMusic.wav", 10);
-           
         }
 
         private void GameTickTimer_Tick(object sender, EventArgs e)
@@ -114,30 +105,108 @@ namespace Snaek
             public int Score { get; set; }
         }
 
-        private void LoadHighscoreList()
+
+
+
+
+        private Point GetNextFoodPosition()
         {
-            if (File.Exists("snake_highscorelist.xml"))
+            int maxX = (int)(GameArea.ActualWidth / SnakeSquareSize);
+            int maxY = (int)(GameArea.ActualHeight / SnakeSquareSize);
+            int foodX = rnd.Next(0, maxX) * SnakeSquareSize;
+            int foodY = rnd.Next(0, maxY) * SnakeSquareSize;
+
+            foreach (SnakePart snakePart in snakeParts)
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<SnakeHighscore>));
-                using (Stream reader = new FileStream("snake_highscorelist.xml", FileMode.Open))
+                if ((snakePart.Position.X == foodX) && (snakePart.Position.Y == foodY))
+                    return GetNextFoodPosition();
+            }
+            return new Point(foodX, foodY);
+        }
+
+
+
+        private void PauseMenu()
+        {
+            if (!paused && isGamePlaying)
+            {
+                bdrPauseMenu.Visibility = Visibility.Visible;
+                gameTickTimer.Stop();
+                paused = !paused;
+            } else if (paused && isGamePlaying)
+            {
+                bdrPauseMenu.Visibility = Visibility.Collapsed;
+                gameTickTimer.Start();
+                paused = !paused;
+            }
+        }
+
+
+        private void EatSnakeFood()
+        {
+            snakeLength++;
+            currentScore++;
+            int timerInterval = Math.Max(SnakeSpeedThreshold, (int)gameTickTimer.Interval.TotalMilliseconds - (currentScore * 2));
+            gameTickTimer.Interval = TimeSpan.FromMilliseconds(timerInterval);
+            GameArea.Children.Remove(snakeFood);
+
+            //Make this random from various strings of audio
+            List<string> eatingSounds = new()
+            {
+                "resources/audio/snake/eating/Mmh.wav",
+                "resources/audio/snake/eating/Laekkert.wav",
+                "resources/audio/snake/eating/haps.wav",
+                "resources/audio/snake/eating/SaftigtAeble.wav"
+            };
+            effectPlayer.Play(eatingSounds[rnd.Next(0, 4)], 50);
+
+            DrawSnakeFood();
+            UpdateGameStatus();
+        }
+
+        private void UpdateGameStatus()
+        {
+            this.tbStatusScore.Text = currentScore.ToString();
+        }
+
+        private void EndGame()
+        {
+            isGamePlaying = false;
+            bool isNewHighscore = false;
+            if (currentScore > 0)
+            {
+                int lowestHighscore = (this.HighscoreList.Count > 0 ? this.HighscoreList.Min(x => x.Score) : 0);
+                if ((currentScore > lowestHighscore) || (this.HighscoreList.Count < MaxHighscoreListEntryCount))
                 {
-                    List<SnakeHighscore> tempList = (List<SnakeHighscore>)serializer.Deserialize(reader);
-                    this.HighscoreList.Clear();
-                    foreach (var item in tempList.OrderByDescending(x => x.Score))
-                        this.HighscoreList.Add(item);
+                    List<string> highscoreEnding = new()
+                    {
+                        "resources/audio/snake/highscore/FlotKlaret.wav",
+                        "resources/audio/snake/highscore/Tillykke.wav",
+                    };
+                    effectPlayer.Play(highscoreEnding[rnd.Next(0, 2)], 50);
+                    bdrInsertPlayerName.Visibility = Visibility.Visible;
+                    txtPlayerName.Focus();
+                    isNewHighscore = true;
                 }
             }
-        }
-
-        private void SaveHighscoreList()
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<SnakeHighscore>));
-            using (Stream writer = new FileStream("snake_highscorelist.xml", FileMode.Create))
+            if (!isNewHighscore)
             {
-                serializer.Serialize(writer, HighscoreList);
+                List<string> loosingEnding = new()
+                {
+                    "resources/audio/snake/loosing/Av.wav",
+                    "resources/audio/snake/loosing/AvForSoeren.wav",
+                    "resources/audio/snake/loosing/DinKlovn.wav",
+                    "resources/audio/snake/loosing/Hovsa.wav",
+                };
+                effectPlayer.Play(loosingEnding[rnd.Next(0, 4)], 50);
+                tbFinalScore.Text = currentScore.ToString();
+                bdrEndOfGame.Visibility = Visibility.Visible;
             }
+            gameTickTimer.IsEnabled = false;
         }
 
+
+        //UI Drawing
         private void DrawSnake()
         {
             foreach (SnakePart snakePart in snakeParts)
@@ -145,10 +214,10 @@ namespace Snaek
                 if (snakePart.UiElement == null)
                 {
                     System.Windows.Shapes.Path snakeface = new();
-                    string snakefaceDataUp = "M 12 40 L 26 40 L 29 39 L 30 38 L 31 35 L 31 33 L 30 19 L 31 18 L 31 17 L 30 16 L 28 10 L 27 9 L 25 8 L 21 7 L 20 7 L 19 7 L 22 0 L 21 1 L 19 5 L 17 1 L 16 0 L 19 7 L 18 7 L 17 7 L 13 8 L 11 9 L 10 10 L 8 16 L 7 17 L 7 18 L 8 19 L 7 33 L 7 35 L 8 38 L 9 39 L 12 40";
-                    string snakefaceDataRight = "M 0 12 L 0 26 L 1 29 L 2 30 L 5 31 L 7 31 L 21 30 L 22 31 L 23 31 L 24 30 L 30 28 L 31 27 L 32 25 L 33 21 L 33 20 L 33 19 L 40 22 L 39 21 L 35 19 L 39 17 L 40 16 L 33 19 L 33 18 L 33 17 L 32 13 L 31 11 L 30 10 L 24 8 L 23 7 L 22 7 L 21 8 L 7 7 L 5 7 L 2 8 L 1 9 L 0 12";
-                    string snakefaceDataDown = "M 29 0 L 15 0 L 12 1 L 11 2 L 10 5 L 10 7 L 11 21 L 10 22 L 10 23 L 11 24 L 13 30 L 14 31 L 16 32 L 20 33 L 21 33 L 22 33 L 19 40 L 20 39 L 22 35 L 24 39 L 25 40 L 22 33 L 23 33 L 24 33 L 28 32 L 30 31 L 31 30 L 33 24 L 34 23 L 34 22 L 33 21 L 34 7 L 34 5 L 33 2 L 32 1 L 29 0";
-                    string snakefaceDataLeft = "M 40 27 L 40 13 L 39 10 L 38 9 L 35 8 L 33 8 L 19 9 L 18 8 L 17 8 L 16 9 L 10 11 L 9 12 L 8 14 L 7 18 L 7 19 L 7 20 L 0 17 L 1 18 L 5 20 L 1 22 L 0 23 L 7 20 L 7 21 L 7 22 L 8 26 L 9 28 L 10 29 L 16 31 L 17 32 L 18 32 L 19 31 L 33 32 L 35 32 L 38 31 L 39 30 L 40 27";
+                    string snakefaceDataUp = "M 9 40 L 30 40 L 33 39 L 34 38 L 35 35 L 35 33 L 34 19 L 35 18 L 35 17 L 34 16 L 32 10 L 31 9 L 29 8 L 25 7 L 24 7 L 20 7 L 20 5 L 26 0 L 24 1 L 20 4 L 19 4 L 15 1 L 13 0 L 19 5 L 19 7 L 15 7 L 14 7 L 10 8 L 8 9 L 7 10 L 5 16 L 4 17 L 4 18 L 5 19 L 4 33 L 4 35 L 5 38 L 6 39 L 9 40";
+                    string snakefaceDataRight = "M -0 10 L 0 31 L 1 34 L 2 35 L 5 36 L 7 36 L 21 35 L 22 36 L 23 36 L 24 35 L 30 33 L 31 32 L 32 30 L 33 26 L 33 25 L 33 21 L 35 21 L 40 27 L 39 25 L 36 21 L 36 20 L 39 16 L 40 14 L 35 20 L 33 20 L 33 16 L 33 15 L 32 11 L 31 9 L 30 8 L 24 6 L 23 5 L 22 5 L 21 6 L 7 5 L 5 5 L 2 6 L 1 7 L -0 10";
+                    string snakefaceDataDown = "M 30 0 L 9 0 L 6 1 L 5 2 L 4 5 L 4 7 L 5 21 L 4 22 L 4 23 L 5 24 L 7 30 L 8 31 L 10 32 L 14 33 L 15 33 L 19 33 L 19 35 L 13 40 L 15 39 L 19 36 L 20 36 L 24 39 L 26 40 L 20 35 L 20 33 L 24 33 L 25 33 L 29 32 L 31 31 L 32 30 L 34 24 L 35 23 L 35 22 L 34 21 L 35 7 L 35 5 L 34 2 L 33 1 L 30 0";
+                    string snakefaceDataLeft = "M 40 30 L 40 9 L 39 6 L 38 5 L 35 4 L 33 4 L 19 5 L 18 4 L 17 4 L 16 5 L 10 7 L 9 8 L 8 10 L 7 14 L 7 15 L 7 19 L 5 19 L 0 13 L 1 15 L 4 19 L 4 20 L 1 24 L 0 26 L 5 20 L 7 20 L 7 24 L 7 25 L 8 29 L 9 31 L 10 32 L 16 34 L 17 35 L 18 35 L 19 34 L 33 35 L 35 35 L 38 34 L 39 33 L 40 30";
                     var converter = TypeDescriptor.GetConverter(typeof(Geometry));
                     switch (snakeDirection)
                     {
@@ -180,91 +249,6 @@ namespace Snaek
                 }
             }
         }
-
-        private void MoveSnake()
-        {
-            //Remove the last part of the snake, in preparation of the new part added below
-            while (snakeParts.Count >= snakeLength)
-            {
-                GameArea.Children.Remove(snakeParts[0].UiElement);
-                snakeParts.RemoveAt(0);
-            }
-            //Next up, we'll add a new element to the snake, which will be the (new) head
-            //Therefore, we mark all existing parts as non-head (body) elements and then
-            //we make sure that they use the body brush
-            System.Windows.Shapes.Path snakebody = new();
-            string snakebodyLeftRight = "M 0 27 L 40 27 L 40 13 L 0 13 L 0 27";
-            string snakebodyUpDown = "M 13 0 L 13 40 L 27 40 L 27 0 L 13 0";
-            var converter = TypeDescriptor.GetConverter(typeof(Geometry));
-
-            foreach (SnakePart snakePart in snakeParts)
-            {
-                switch (snakePart.Direction)
-                {
-                    case Direction.Up or Direction.Down:
-                        snakebody.Data = (Geometry)converter.ConvertFrom(snakebodyUpDown);
-                        (snakePart.UiElement as System.Windows.Shapes.Path).Data = snakebody.Data;
-                        break;
-
-                    case Direction.Left or Direction.Right:
-                        snakebody.Data = (Geometry)converter.ConvertFrom(snakebodyLeftRight);
-                        (snakePart.UiElement as System.Windows.Shapes.Path).Data = snakebody.Data;
-                        break;
-                }
-                (snakePart.UiElement as System.Windows.Shapes.Path).Fill = snakeBodyBrush;
-                snakePart.IsHead = false;
-            }
-            //Determine in which direction to expand the snake, based on the current direction
-            SnakePart snakeHead = snakeParts[snakeParts.Count - 1];
-            double nextX = snakeHead.Position.X;
-            double nextY = snakeHead.Position.Y;
-            Direction dir = snakeHead.Direction;
-            switch (snakeDirection)
-            {
-                case SnakeDirection.Left:
-                    nextX -= SnakeSquareSize;
-                    dir = Direction.Left;
-                    break;
-                case SnakeDirection.Right:
-                    nextX += SnakeSquareSize;
-                    dir = Direction.Right;
-                    break;
-                case SnakeDirection.Up:
-                    nextY -= SnakeSquareSize;
-                    dir = Direction.Up;
-                    break;
-                case SnakeDirection.Down:
-                    nextY += SnakeSquareSize;
-                    dir = Direction.Down;
-                    break;
-            }
-            //Now add the new head part to our list of snake parts...
-            snakeParts.Add(new SnakePart()
-            {
-                Position = new Point(nextX, nextY),
-                IsHead = true,
-                Direction = dir
-            });
-            //And then draw the motherfucker
-            DrawSnake();
-            DoCollisionCheck();
-        }
-
-        private Point GetNextFoodPosition()
-        {
-            int maxX = (int)(GameArea.ActualWidth / SnakeSquareSize);
-            int maxY = (int)(GameArea.ActualHeight / SnakeSquareSize);
-            int foodX = rnd.Next(0, maxX) * SnakeSquareSize;
-            int foodY = rnd.Next(0, maxY) * SnakeSquareSize;
-
-            foreach (SnakePart snakePart in snakeParts)
-            {
-                if ((snakePart.Position.X == foodX) && (snakePart.Position.Y == foodY))
-                    return GetNextFoodPosition();
-            }
-            return new Point(foodX, foodY);
-        }
-
         private void DrawSnakeFood()
         {
             Point foodPosition = GetNextFoodPosition();
@@ -285,7 +269,155 @@ namespace Snaek
             Canvas.SetTop(snakeFood, foodPosition.Y);
             Canvas.SetLeft(snakeFood, foodPosition.X);
         }
+        
+        //Movement
+        private void MoveSnake()
+        {
+            //Remove the last part of the snake, in preparation of the new part added below
+            while (snakeParts.Count >= snakeLength)
+            {
+                GameArea.Children.Remove(snakeParts[0].UiElement);
+                snakeParts.RemoveAt(0);
+            }
+            //Next up, we'll add a new element to the snake, which will be the (new) head
+            //Therefore, we mark all existing parts as non-head (body) elements and then
+            //we make sure that they use the body brush
+            System.Windows.Shapes.Path snakebody = new();
+            string snakebodyData = "M 0 13 L 0 27 L 5 35 L 13 40 L 27 40 L 35 35 L 40 27 L 40 13 L 35 5 L 27 0 L 13 0 L 20 15 L 25 15 L 25 25 L 15 25 L 15 15 L 20 15 L 13 0 L 5 5 L 0 13";
+            var converter = TypeDescriptor.GetConverter(typeof(Geometry));
+            snakebody.Data = (Geometry)converter.ConvertFrom(snakebodyData);
 
+            foreach (SnakePart snakePart in snakeParts)
+            {
+                (snakePart.UiElement as System.Windows.Shapes.Path).Data = snakebody.Data;
+                (snakePart.UiElement as System.Windows.Shapes.Path).Fill = snakeBodyBrush;
+                snakePart.IsHead = false;
+            }
+            //Determine in which direction to expand the snake, based on the current direction
+            SnakePart snakeHead = snakeParts[snakeParts.Count - 1];
+            double nextX = snakeHead.Position.X;
+            double nextY = snakeHead.Position.Y;
+            switch (snakeDirection)
+            {
+                case SnakeDirection.Left:
+                    nextX -= SnakeSquareSize; break;
+                case SnakeDirection.Right:
+                    nextX += SnakeSquareSize; break;
+                case SnakeDirection.Up:
+                    nextY -= SnakeSquareSize; break;
+                case SnakeDirection.Down:
+                    nextY += SnakeSquareSize; break;
+            }
+            //Now add the new head part to our list of snake parts...
+            snakeParts.Add(new SnakePart()
+            {
+                Position = new Point(nextX, nextY),
+                IsHead = true
+            });
+            //And then draw the motherfucker
+            DrawSnake();
+            DoCollisionCheck();
+        }
+        private void DoCollisionCheck()
+        {
+            SnakePart snakeHead = snakeParts[snakeParts.Count - 1];
+
+            if ((snakeHead.Position.X == Canvas.GetLeft(snakeFood)) && (snakeHead.Position.Y == Canvas.GetTop(snakeFood)))
+            {
+                EatSnakeFood();
+                return;
+            }
+
+            if ((snakeHead.Position.Y < 0) || (snakeHead.Position.Y >= GameArea.ActualHeight) ||
+                (snakeHead.Position.X < 0) || (snakeHead.Position.X >= GameArea.ActualWidth))
+            {
+                EndGame();
+            }
+
+            foreach (SnakePart snakeBodyPart in snakeParts.Take(snakeParts.Count - 1))
+            {
+                if ((snakeHead.Position.X == snakeBodyPart.Position.X) && (snakeHead.Position.Y == snakeBodyPart.Position.Y))
+                {
+                    EndGame();
+                }
+            }
+        }
+
+
+
+        public class AudioPlayer
+        {
+            private MediaPlayer m_player;
+
+            /// <summary>
+            /// Plays the audio file at path <paramref name="filename"/>
+            /// with the given volume <paramref name="volume"/>
+            /// </summary>
+            /// <param name="filename">Relative URI</param>
+            /// <param name="volume">Volume in int</param>
+            public void Play(string filename, int volume)
+            {
+                m_player = new MediaPlayer();
+                m_player.Volume = volume / 100.0f;
+                m_player.Open(new Uri(filename, UriKind.Relative));
+                m_player.Play();
+            }
+
+            public void PlayLoop(string filename, int volume)
+            {
+                Task.Run(() =>
+                {
+                    m_player = new MediaPlayer();
+                    m_player.Open(new Uri(filename, UriKind.Relative));
+                    m_player.Volume = volume / 100.0f;
+                    m_player.Play();
+                    TimeSpan duration = TimeSpan.FromSeconds(24);
+                    RepeatAudio(duration);
+                });
+            }
+
+            public void Mute()
+            {
+                m_player.Stop();
+            }
+
+            private void RepeatAudio(TimeSpan duration)
+            {
+                while (true)
+                {
+                    if(m_player.Position >= duration)
+                    {
+                        m_player.Position = TimeSpan.FromMilliseconds(1);
+                    }
+                }
+            }
+        }
+    
+        //Highscore list
+        private void LoadHighscoreList()
+        {
+            if (File.Exists("snake_highscorelist.xml"))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<SnakeHighscore>));
+                using (Stream reader = new FileStream("snake_highscorelist.xml", FileMode.Open))
+                {
+                    List<SnakeHighscore> tempList = (List<SnakeHighscore>)serializer.Deserialize(reader);
+                    this.HighscoreList.Clear();
+                    foreach (var item in tempList.OrderByDescending(x => x.Score))
+                        this.HighscoreList.Add(item);
+                }
+            }
+        }
+        private void SaveHighscoreList()
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<SnakeHighscore>));
+            using (Stream writer = new FileStream("snake_highscorelist.xml", FileMode.Create))
+            {
+                serializer.Serialize(writer, HighscoreList);
+            }
+        }
+        
+        //Click events
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             SnakeDirection originalSnakeDirection = snakeDirection;
@@ -315,133 +447,16 @@ namespace Snaek
                     break;
             }
         }
-
-        private void PauseMenu()
-        {
-            if (!paused && isGamePlaying)
-            {
-                bdrPauseMenu.Visibility = Visibility.Visible;
-                gameTickTimer.Stop();
-                paused = !paused;
-            } else if (paused && isGamePlaying)
-            {
-                bdrPauseMenu.Visibility = Visibility.Collapsed;
-                gameTickTimer.Start();
-                paused = !paused;
-            }
-        }
-
-        private void DoCollisionCheck()
-        {
-            SnakePart snakeHead = snakeParts[snakeParts.Count - 1];
-
-            if ((snakeHead.Position.X == Canvas.GetLeft(snakeFood)) && (snakeHead.Position.Y == Canvas.GetTop(snakeFood)))
-            {
-                EatSnakeFood();
-                return;
-            }
-
-            if ((snakeHead.Position.Y < 0) || (snakeHead.Position.Y >= GameArea.ActualHeight) ||
-                (snakeHead.Position.X < 0) || (snakeHead.Position.X >= GameArea.ActualWidth))
-            {
-                EndGame();
-            }
-
-            foreach (SnakePart snakeBodyPart in snakeParts.Take(snakeParts.Count - 1))
-            {
-                if ((snakeHead.Position.X == snakeBodyPart.Position.X) && (snakeHead.Position.Y == snakeBodyPart.Position.Y))
-                {
-                    EndGame();
-                }
-            }
-        }
-
-        private void EatSnakeFood()
-        {
-            snakeLength++;
-            currentScore++;
-            int timerInterval = Math.Max(SnakeSpeedThreshold, (int)gameTickTimer.Interval.TotalMilliseconds - (currentScore * 2));
-            gameTickTimer.Interval = TimeSpan.FromMilliseconds(timerInterval);
-            GameArea.Children.Remove(snakeFood);
-
-            //Make this random from various strings of audio
-            List<string> eatingSounds = new()
-            {
-                "resources/audio/snake/eating/Mmh.wav",
-                "resources/audio/snake/eating/Laekkert.wav",
-                "resources/audio/snake/eating/haps.wav",
-                "resources/audio/snake/eating/SaftigtAeble.wav"
-            };
-            snakeVoice.Play(eatingSounds[rnd.Next(0, 4)], 50);
-
-            DrawSnakeFood();
-            UpdateGameStatus();
-        }
-
-        private void UpdateGameStatus()
-        {
-            this.tbStatusScore.Text = currentScore.ToString();
-        }
-
-        private void EndGame()
-        {
-            isGamePlaying = false;
-            bool isNewHighscore = false;
-            if (currentScore > 0)
-            {
-                int lowestHighscore = (this.HighscoreList.Count > 0 ? this.HighscoreList.Min(x => x.Score) : 0);
-                if ((currentScore > lowestHighscore) || (this.HighscoreList.Count < MaxHighscoreListEntryCount))
-                {
-                    List<string> highscoreEnding = new()
-                    {
-                        "resources/audio/snake/highscore/FlotKlaret.wav",
-                        "resources/audio/snake/highscore/Tillykke.wav",
-                    };
-                    snakeVoice.Play(highscoreEnding[rnd.Next(0, 2)], 50);
-                    bdrInsertPlayerName.Visibility = Visibility.Visible;
-                    txtPlayerName.Focus();
-                    isNewHighscore = true;
-                }
-            }
-            if (!isNewHighscore)
-            {
-                List<string> loosingEnding = new()
-                {
-                    "resources/audio/snake/loosing/Av.wav",
-                    "resources/audio/snake/loosing/AvForSoeren.wav",
-                    "resources/audio/snake/loosing/DinKlovn.wav",
-                    "resources/audio/snake/loosing/Hovsa.wav",
-                };
-                snakeVoice.Play(loosingEnding[rnd.Next(0, 4)], 50);
-                tbFinalScore.Text = currentScore.ToString();
-                bdrEndOfGame.Visibility = Visibility.Visible;
-            }
-            gameTickTimer.IsEnabled = false;
-        }
-
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
         }
-
-        private void BtnClose_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
         private void BtnShowHighscoreList_Click(object sender, RoutedEventArgs e)
         {
             //Show some awesome list of players that are good at this game!
             bdrWelcomeMessage.Visibility = Visibility.Collapsed;
             bdrHighscoreList.Visibility = Visibility.Visible;
         }
-
-        private void BtnHideHighscoreList_Click(object sender, RoutedEventArgs e)
-        {
-            bdrWelcomeMessage.Visibility = Visibility.Visible;
-            bdrHighscoreList.Visibility = Visibility.Collapsed;
-        }
-
         private void BtnAddToHighscoreList_Click(object sender, RoutedEventArgs e)
         {
             int newIndex = 0;
@@ -469,39 +484,19 @@ namespace Snaek
             bdrInsertPlayerName.Visibility = Visibility.Collapsed;
             bdrHighscoreList.Visibility = Visibility.Visible;
         }
-
-        public class Sound
+        private void BtnHideHighscoreList_Click(object sender, RoutedEventArgs e)
         {
-            private MediaPlayer m_player;
+            bdrWelcomeMessage.Visibility = Visibility.Visible;
+            bdrHighscoreList.Visibility = Visibility.Collapsed;
+        }
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
 
-            public void Play(string filename, int volume)
-            {
-                m_player = new MediaPlayer();
-                m_player.Volume = volume / 100.0f;
-                m_player.Open(new Uri(filename, UriKind.Relative));
-                m_player.Play();
-            }
-
-            public void PlayLoop(string filename, int volume)
-            {
-                m_player = new MediaPlayer();
-                m_player.Open(new Uri(filename, UriKind.Relative));
-                m_player.Volume = volume / 100.0f;
-                m_player.Play();
-                TimeSpan duration = TimeSpan.FromSeconds(24);
-                RepeatAudio(duration);
-            }
-
-            private void RepeatAudio(TimeSpan duration)
-            {
-                while (true)
-                {
-                    if(m_player.Position >= duration)
-                    {
-                        m_player.Position = TimeSpan.FromMilliseconds(1);
-                    }
-                }
-            }
+        private void BtnMuteBackgroundMusic_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke((Action)(() => { musicPlayer.Mute(); }));
         }
     }
 }

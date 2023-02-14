@@ -9,7 +9,7 @@
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         Title="Snaek - Score: 0" SizeToContent="WidthAndHeight" 
         ContentRendered="Window_ContentRendered" KeyDown="Window_KeyDown"
-        ResizeMode="NoResize" WindowStyle="None" Background="Black" MouseDown="Window_MouseDown">
+        ResizeMode="NoResize"  WindowStyle="None" Background="Black" MouseDown="Window_MouseDown">
     <Window.Resources>
         <CollectionViewSource Source="{Binding ElementName=window, Path=HighscoreList}" x:Key="HighScoreListViewSource">
             <CollectionViewSource.SortDescriptions>
@@ -478,7 +478,7 @@
                         Canvas.Top="50"
                         Name="bdrPauseMenu"
                         Panel.ZIndex="1"
-                    Visibility="Collapsed">
+                    Visibility="Visible">
                     <StackPanel Orientation="Vertical">
                         <StackPanel.Background>
                             <ImageBrush ImageSource="./resources/images/backgroundCuteSnake.png"/>
