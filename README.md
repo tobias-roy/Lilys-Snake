@@ -4,7 +4,9 @@ Lilys Snake is a game inspired by the WPF Tutorial: https://wpf-tutorial.com/cre
 
 The game has been visually overhauled with everything from popping menus, snake animations and more!
 
-
+## How to use
+Download the project and create a production build of the solution.
+Run the .exe file and you should be able to play the game.
 
 ## Credits
 #### Music
