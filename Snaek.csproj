@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="resources\audio\music\backgroundMusic.wav" />
+    <None Remove="resources\audio\snake\eating\haps.wav" />
+    <None Remove="resources\audio\snake\eating\Laekkert.wav" />
+    <None Remove="resources\audio\snake\eating\Mmh.wav" />
+    <None Remove="resources\audio\snake\eating\SaftigtAeble.wav" />
+    <None Remove="resources\audio\snake\highscore\FlotKlaret.wav" />
+    <None Remove="resources\audio\snake\highscore\Tillykke.wav" />
+    <None Remove="resources\audio\snake\loosing\Av.wav" />
+    <None Remove="resources\audio\snake\loosing\AvForSoeren.wav" />
+    <None Remove="resources\audio\snake\loosing\DinKlovn.wav" />
+    <None Remove="resources\audio\snake\loosing\Hovsa.wav" />
     <None Remove="resources\icons\arrow_down.png" />
     <None Remove="resources\icons\arrow_left.png" />
     <None Remove="resources\icons\arrow_right.png" />
@@ -20,6 +31,39 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="resources\audio\music\backgroundMusic.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\audio\snake\eating\haps.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\audio\snake\eating\Laekkert.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\audio\snake\eating\Mmh.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\audio\snake\eating\SaftigtAeble.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\audio\snake\highscore\FlotKlaret.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\audio\snake\highscore\Tillykke.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\audio\snake\loosing\Av.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\audio\snake\loosing\AvForSoeren.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\audio\snake\loosing\DinKlovn.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\audio\snake\loosing\Hovsa.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Resource Include="resources\icons\arrow_down.png" />
     <Resource Include="resources\icons\arrow_left.png" />
     <Resource Include="resources\icons\arrow_right.png" />
