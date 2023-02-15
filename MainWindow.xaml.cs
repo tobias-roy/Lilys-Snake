@@ -403,8 +403,10 @@ namespace Snaek
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            //Implements a secret :-)
-            if(Keyboard.IsKeyDown(Key.Up) && Keyboard.IsKeyDown(Key.LeftShift) && Keyboard.IsKeyDown(Key.LeftCtrl))
+            //Reveals a secret :-)
+            if(Keyboard.IsKeyDown(Key.Up) 
+               && Keyboard.IsKeyDown(Key.LeftShift) 
+               && Keyboard.IsKeyDown(Key.LeftCtrl))
             {
                 this.CbEnableFastfood.Visibility = Visibility.Visible; 
             }

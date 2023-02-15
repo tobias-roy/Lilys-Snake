@@ -12,7 +12,7 @@ namespace Snaek.models
         private MediaPlayer m_player;
 
         /// <summary>
-        /// Plays the audio file at path <paramref name="filename"/>
+        /// Plays the audio file at the relative path <paramref name="filename"/>
         /// with the given volume <paramref name="volume"/>
         /// </summary>
         /// <param name="filename">Relative URI</param>
@@ -25,6 +25,13 @@ namespace Snaek.models
             m_player.Play();
         }
 
+        ///<summary>
+        /// Plays the audio file at the relative path <paramref name="filename"/>
+        /// with the given volume <paramref name="volume"/>
+        /// on a seperate thread.
+        /// </summary>
+        /// <param name="filename">Relative URI</param>
+        /// <param name="volume">Volume in int</param>
         public void PlayLoop(string filename, int volume)
         {
             Task.Run(() =>
@@ -38,6 +45,11 @@ namespace Snaek.models
             });
         }
 
+
+        /// <summary>
+        /// Repeats the audio the mediaplayer is playing.
+        /// </summary>
+        /// <param name="duration">duration of audio file</param>
         private void RepeatAudio(TimeSpan duration)
         {
             while (true)

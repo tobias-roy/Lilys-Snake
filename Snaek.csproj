@@ -31,9 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="resources\audio\music\backgroundMusic.wav">
+    <EmbeddedResource Include="resources\audio\music\backgroundMusic.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </EmbeddedResource>
     <EmbeddedResource Include="resources\audio\snake\eating\haps.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
