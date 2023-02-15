@@ -50,7 +50,8 @@ namespace Snaek
         /// </summary>
         public MainWindow()
         {
-            musicPlayer.PlayLoop(@"resources/audio/music/backgroundMusic.wav", 10);
+            //musicPlayer.PlayLoop(@"resources/audio/music/backgroundMusic.wav", 10);
+            musicPlayer.PlayLoop(@"backgroundMusic.wav", 10);
             InitializeComponent();
             gameTickTimer.Tick += GameTickTimer_Tick;
             LoadHighscoreList();
